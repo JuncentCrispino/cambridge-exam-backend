@@ -7,7 +7,15 @@ import * as path from 'path';
 export class ProductsService {
   private csvFilePath = path.resolve(__dirname, '../data/products.csv');
 
+  private ensureCSVFileExists() {
+    if (!fs.existsSync(this.csvFilePath)) {
+      fs.mkdirSync(path.dirname(this.csvFilePath), { recursive: true });
+      fs.writeFileSync(this.csvFilePath, 'id,type,name,price\n'); // Create file with headers
+    }
+  }
+
   private readCSV(): Promise<any[]> {
+    this.ensureCSVFileExists();
     return new Promise((resolve, reject) => {
       const rows: any[] = [];
       fs.createReadStream(this.csvFilePath)
@@ -19,6 +27,7 @@ export class ProductsService {
   }
 
   private writeCSV(data: any[]): Promise<void> {
+    this.ensureCSVFileExists();
     return new Promise((resolve, reject) => {
       const ws = fs.createWriteStream(this.csvFilePath);
       fastCsv
@@ -73,6 +82,13 @@ export class ProductsService {
 
   async delete(id: string): Promise<void> {
     const data = await this.readCSV();
+
+    // Check if product exists
+    const productExists = data.some((item) => item.id === id);
+    if (!productExists) {
+      throw new BadRequestException(`Product with id ${id} does not exist.`);
+    }
+
     const filteredData = data.filter((item) => item.id !== id);
     await this.writeCSV(filteredData);
   }
