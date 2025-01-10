@@ -22,7 +22,7 @@ This project is a NestJS-based backend for managing product data stored in a CSV
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/JuncentCrispino/cambridge-exam-backend.git
    cd cambridge-exam-backend
    ```
 
@@ -236,10 +236,3 @@ The base URL for all endpoints is `/api`.
    ```
 
 ---
-
-## License
-This project is licensed under the [UNLICENSED] license.
-
----
-
-Happy coding!
